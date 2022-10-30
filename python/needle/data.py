@@ -171,14 +171,18 @@ class DataLoader:
         self.dataset = dataset
         self.shuffle = shuffle
         self.batch_size = batch_size
-        ordering = np.arange(len(dataset))
-        if self.shuffle:
-            np.random.shuffle(ordering)
-        self.ordering = np.array_split(ordering, range(batch_size, len(dataset), batch_size))
+        if not self.shuffle:
+             self.ordering = np.array_split(np.arange(len(dataset)),
+                                            range(batch_size, len(dataset), batch_size))
 
     def __iter__(self):
         ### BEGIN YOUR SOLUTION
         self.batch_idx = 0
+        if self.shuffle:
+            ordering = np.arange(len(self.dataset))
+            np.random.shuffle(ordering)
+            batch_ranges = range(self.batch_size, len(self.dataset), self.batch_size)
+            self.ordering = np.array_split(ordering, batch_ranges)
         ### END YOUR SOLUTION
         return self
 
